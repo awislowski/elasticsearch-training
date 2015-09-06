@@ -1,0 +1,107 @@
+PUT /auctions/offers/_mapping
+{ 
+  "offers" : { 
+    "properties" : { 
+      "location" : { 
+        "type" : "geo_point" 
+      } 
+    } 
+  } 
+}
+
+
+PUT /auctions/offers/10
+{
+    "location" : { "lat" : 32.14, "lon" : -63.46 } 
+}
+
+
+PUT /auctions/offers/11
+{
+    "location" : "32.24,-63.56"  
+}
+
+PUT /auctions/offers/12
+{
+    "location" : [-63.76, 32.44]
+}
+
+/box
+GET auctions/offers/_search 
+{
+  "query" : { 
+    "filtered" : { 
+      "filter" : { 
+        "geo_bbox" : { 
+          "location" : { 
+            "top_left" : { "lat" : 51.73, "lon" : -84.1 }, 
+            "bottom_right" : { "lat" : 30.00, "lon" : -63.00 } 
+          } 
+        } 
+      } 
+    } 
+  } 
+}
+
+//distance
+GET auctions/offers/_search 
+{
+  "query" : { 
+    "filtered" : { 
+      "filter" : { 
+        "geo_distance" : { 
+          "distance" : "100km" ,
+          "location" : { "lat" : 32.44, "lon" : -63.70 } 
+        } 
+      } 
+    } 
+  } 
+}
+
+GET auctions/offers/_search 
+{
+  "query" : { 
+    "filtered" : { 
+      "filter" : { 
+        "geo_distance_range" : { 
+          "from" : "15km",
+          "to" : "80km" ,
+          "location" : { "lat" : 32.44, "lon" : -63.70 } 
+        } 
+      } 
+    } 
+  } 
+}
+
+
+//agg
+
+GET auctions/offers/_search 
+{
+  "size" : 0,
+  "aggs": {
+    "distance": {
+      "geo_distance": {
+        "field": "location",
+        "unit": "km", 
+        "origin": {
+          "lat": 32.44,
+          "lon": -63.70
+        },
+        "ranges": [
+          {
+            "from": 0,
+            "to": 15
+          },
+          {
+            "from": 15,
+            "to": 80
+          }
+        ]
+      }
+    }
+  } 
+}
+
+
+

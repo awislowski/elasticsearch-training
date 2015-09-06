@@ -1,0 +1,280 @@
+DELETE auctions
+PUT _bulk
+{"index" : { "_index" : "auctions", "_type" : "offers", "_id" : "1"}}
+{  "name": "Obiektyw Cannon 2.8",  "price" : 124.50, "category" : "obiektywy", "endDate": "2015-09-08T16:45:04.000Z", "attributes" : {"lenght" : 2.8 }}
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Obiektyw Cannon 1.8",  "price" : 120.99,  "category" : "obiektywy", "endDate": "2015-09-09T16:45:04.000Z", "attributes" : {"lenght" : 1.8 } }
+
+GET /auctions/_search
+
+GET /auctions/_search
+{
+  "query": {
+      "filtered": {
+        "query": {
+          "match": {
+            "name": "2.8"
+          }
+        }
+      }
+  }, 
+  "aggs": {
+    "category": {
+      "terms": {
+        "field": "category",
+        "size": 10
+      }
+    }
+  }
+}
+
+GET /auctions/_search
+{
+  "post_filter": {
+      "query": {
+"match": {
+          "name": "2.8"
+        }
+      }
+  }, 
+  "aggs": {
+    "category": {
+      "terms": {
+        "field": "category",
+        "size": 10
+      }
+    }
+  }
+}
+
+
+
+
+GET /auctions/_search
+{
+  "size": 0, 
+  "aggs": {
+    "category": {
+      "terms": {
+        "field": "category",
+        "size": 10
+      }
+    }
+  }
+}
+
+
+GET /auctions/_search
+{
+  "size": 0, 
+  "aggs": {
+    "category": {
+      "terms": {
+        "field": "category",
+        "size": 10
+      },
+      "aggs": {
+        "price_avg": {
+          "avg": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+
+GET /auctions/_search
+{
+  "size": 0, 
+  "aggs": {
+    "category": {
+      "terms": {
+        "field": "category",
+        "size": 10
+      },
+      "aggs": {
+        "price_avg": {
+          "avg": {
+            "field": "price"
+          }
+        },
+        "price_min": {
+          "min": {
+            "field": "price"
+          }
+        },
+        "price_max": {
+          "max": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+GET /auctions/_search
+{
+  "size": 0, 
+  "aggs": {
+    "category": {
+      "terms": {
+        "field": "category",
+        "size": 10
+      }, 
+      "aggs": {
+        "length": {
+          "terms": {
+            "field": "attributes.lenght",
+            "size": 10
+          }
+        }
+      }
+  }
+}
+}
+
+//global
+
+GET /auctions/_search
+{
+  "query": {
+     "match": {
+       "attributes.lenght": 1.8
+     }
+  },  
+  "aggs": {
+    "count": {
+      "value_count": {
+        "field": "attributes.lenght"
+      }
+    },
+    "all" :{
+      "global": {
+        
+      } 
+    }
+    
+  }
+}
+
+//bucket for filter
+
+GET /auctions/_search
+{
+  "size" : 0,
+  "aggs": {
+    "price_2.8": {
+       "filter": {
+         "term": {
+           "attributes.lenght": 2.8
+         }
+       }
+    }   
+  }
+}
+
+//missing
+GET /auctions/offers/_search
+{
+  "size" : 0,
+  "aggs": {
+    "no attributes": {
+      "missing": {
+        "field": "attributes.lenght"
+      }
+    }
+  }
+}
+
+//scripted value
+
+
+GET /auctions/offers/_search
+{
+  "size" : 0,
+  "aggs": {
+    "length": {
+      "terms": {
+        "field": "attributes.lenght",
+        "script" : "_value + 1"
+      }
+    }
+  }
+}
+
+
+
+
+
+//ranges
+GET /auctions/offers/_search
+{
+  "size" : 0,
+  "aggs": {
+    "length": {
+      "range": {
+        "field": "attributes.lenght",
+        "ranges": [
+          {"to" : 0}, 
+          {  "from": 0, "to": 2 },
+          {"from":2 , "to": 5}
+        ]
+      }
+    }
+  }
+}
+
+//date range
+GET /auctions/offers/_search
+{
+  "size" : 0,
+  "aggs": {
+    "start_date": {
+      "date_range": {
+        "field": "endDate",
+        "ranges": [
+          {
+            "from": "now",
+            "to": "now+10d"
+          }
+        ]
+      }
+    }
+  }
+}
+
+//histogram
+
+GET /auctions/offers/_search
+{
+  "size" : 0,
+  "aggs": {
+    "length_histogram": {
+      "histogram": {
+        "field": "price",
+        "interval": 1
+      }
+    }
+  }
+}
+
+//date_histogram
+GET /auctions/offers/_search
+{
+  "size" : 0,
+  "aggs": {
+    "endDate_histogram": {
+      "date_histogram": {
+        "field": "endDate",
+        "interval": "day"
+      }
+    }
+  }
+}
+
+
+
+

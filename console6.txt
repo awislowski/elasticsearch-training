@@ -1,0 +1,112 @@
+
+GET /auctions/_search
+{
+  "query": {
+    "match_phrase": {
+      "name": "cannon"
+    }
+  }, 
+  "highlight": {
+    "fields": {
+      "name": {}
+    }
+  }
+  
+}
+
+
+
+
+GET /auctions/_search
+{
+  "query": {
+    "match_phrase": {
+      "name": "obiektyw cannon"
+    }
+  }, 
+  "highlight": {
+    "fields": {
+      "name": {}
+    }
+  }
+  
+}
+
+
+
+GET auctions/_suggest
+{
+  "suggest" : {
+    "text" : "obiekty",
+    "term" : {
+      "field" : "name" 
+    }
+  }
+}
+
+GET auctions/_suggest
+{
+  "suggest" : {
+    "text" : "obiekty",
+    "term" : {
+      "field" : "name" ,
+      "suggest_mode": "always",
+      "size" : 2
+      
+    }
+  }
+}
+
+GET auctions/_suggest
+{
+  "suggest" : {
+    "text" : "obiektyw cann",
+    "phrase" : {
+      "field" : "name" ,
+      "size" : 2
+      
+    }
+  }
+}
+
+//completion - do not know if use it:
+PUT auctions/product/_mapping 
+{ 
+  "product" : { 
+    "properties" : { 
+      "name" : { "type" : "string" }, 
+      "suggest" : { 
+         "type" : "completion", 
+         "analyzer" : "simple" 
+      } 
+    }
+  }
+}
+
+PUT _bulk
+{"index" : { "_index" : "auctions", "_type" : "product", "_id" : "1"}}
+{  "name": "Obiektyw Cannon 2.8", "suggest" : { "input" : [ "obiektyw", "cannon", "nikon"] }}
+
+
+GET auctions/_suggest
+{
+  "suggest" : {
+    "text" : "ca",
+    "completion": {
+      "field" : "suggest"
+    }
+  }
+}
+
+GET auctions/_suggest
+{
+  "suggest" : {
+    "text" : "canl",
+    "completion": {
+      "field" : "suggest",
+      "fuzzy" : {
+        "edit_distance" : 2
+      }
+    }
+  }
+}
