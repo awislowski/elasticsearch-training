@@ -4,6 +4,16 @@ PUT _bulk
 {  "name": "Obiektyw Cannon 2.8",  "price" : 124.50, "category" : "obiektywy", "endDate": "2015-09-08T16:45:04.000Z", "attributes" : {"lenght" : 2.8 }}
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
 {  "name": "Obiektyw Cannon 1.8",  "price" : 120.99,  "category" : "obiektywy", "endDate": "2015-09-09T16:45:04.000Z", "attributes" : {"lenght" : 1.8 } }
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Obiektyw Nikon 1.8",  "price" : 300.99,  "category" : "obiektywy", "endDate": "2015-09-09T16:45:04.000Z", "attributes" : {"lenght" : 1.8 } }
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Obiektyw Nikon 2.8",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-09-09T16:45:04.000Z", "attributes" : {"lenght" : 2.8 } }
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Aparat Nikon D3200",  "price" : 500.99,  "category" : "aparaty cyfrowe", "endDate": "2015-09-09T16:45:04.000Z", "attributes" : {"lenght" : 1.8 } }
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Aparat Nikon D7010",  "price" : 600.99,  "category" : "aparaty cyfrowe", "endDate": "2015-09-09T16:45:04.000Z", "attributes" : {"lenght" : 2.8 } }
+
+
 
 GET /auctions/_search
 
@@ -274,6 +284,80 @@ GET /auctions/offers/_search
     }
   }
 }
+
+//significant_terms
+GET /auctions/offers/_search
+{
+  "query": { 
+    "terms": {
+      "category": [
+        "obiektywy"
+      ]
+    }
+  },
+  "size": 0, 
+  "aggs": {
+    "significantTerms": {
+      "significant_terms": {
+        "field": "name"
+      }
+    }
+  }
+}
+
+//percentiles
+GET /auctions/offers/_search
+{
+  "query": { 
+    "terms": {
+      "category": [
+        "obiektywy"
+      ]
+    }
+  },
+  "size": 0, 
+  "aggs": {
+    "percentile": {
+      "percentiles": {
+        "field": "price"
+      }
+    }
+  }
+}
+
+
+//top hits
+
+GET /auctions/offers/_search
+{
+  "query": { 
+    "terms": {
+      "category": [
+        "obiektywy"
+      ]
+    }
+  },
+  "size": 0, 
+  "aggs": {
+    "top_hits": {
+      "top_hits": {
+        "size": 10,
+        "_source": {
+          "include": "name"
+        },
+        "sort": [
+          {
+            "attributes.lenght": {
+              "order": "asc"
+            }
+          }]
+      }
+    }
+  }
+}
+
+
+
 
 
 
