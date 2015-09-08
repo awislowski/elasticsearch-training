@@ -1,3 +1,5 @@
+DELETE /auctions
+
 PUT /auctions/offers/1
 {
   "name": "Obiektyw Cannon 2.8"
@@ -21,7 +23,7 @@ POST /auctions/offers
   "price" : 120.99
 }
 
-GET  /auctions/offers/AU-SfoujH7cSx2yKlAfT
+GET  /auctions/offers/AU-r8FE2ZiRQpBgL4dCh
 
 POST /auctions/offers/1
 {
@@ -37,6 +39,8 @@ POST /auctions/offers/1/_update
     "price" : 121.50
   }
 }
+
+GET /auctions/offers/1
 
 POST /auctions/offers/1/_update
 {
@@ -72,6 +76,3 @@ PUT _bulk
 
 
 GET /auctions/_search
-
-
-
