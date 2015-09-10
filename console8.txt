@@ -1,3 +1,4 @@
+
 DELETE auctions
 PUT _bulk
 {"index" : { "_index" : "auctions", "_type" : "offers", "_id" : "1"}}
@@ -19,15 +20,7 @@ GET /auctions/_search
 
 GET /auctions/_search
 {
-  "query": {
-      "filtered": {
-        "query": {
-          "match": {
-            "name": "2.8"
-          }
-        }
-      }
-  }, 
+  "size" : 0,
   "aggs": {
     "category": {
       "terms": {
@@ -38,6 +31,10 @@ GET /auctions/_search
   }
 }
 
+//pola nieanalizowane
+//dodaje mapping notanlyzed category
+
+//???
 GET /auctions/_search
 {
   "post_filter": {
@@ -146,7 +143,7 @@ GET /auctions/_search
 }
 }
 
-//global
+//global - lepszy przykład (dla innych kolorów)
 
 GET /auctions/_search
 {
@@ -163,14 +160,12 @@ GET /auctions/_search
     },
     "all" :{
       "global": {
-        
       } 
     }
-    
   }
 }
 
-//bucket for filter
+//bucket for filter - bardzije złożone zappytanie!
 
 GET /auctions/_search
 {
@@ -186,7 +181,7 @@ GET /auctions/_search
   }
 }
 
-//missing
+//missing - obiektywy bez wypełnionego światł
 GET /auctions/offers/_search
 {
   "size" : 0,
@@ -199,9 +194,7 @@ GET /auctions/offers/_search
   }
 }
 
-//scripted value
-
-
+//scripted value price in EUR
 GET /auctions/offers/_search
 {
   "size" : 0,
@@ -209,7 +202,7 @@ GET /auctions/offers/_search
     "length": {
       "terms": {
         "field": "attributes.lenght",
-        "script" : "_value + 1"
+        "script" : "_value + 2"
       }
     }
   }
@@ -219,7 +212,7 @@ GET /auctions/offers/_search
 
 
 
-//ranges
+//ranges zakres cen
 GET /auctions/offers/_search
 {
   "size" : 0,
@@ -256,7 +249,7 @@ GET /auctions/offers/_search
   }
 }
 
-//histogram
+//histogram - wykres słubkowy - co to historam definicjha
 
 GET /auctions/offers/_search
 {
@@ -285,7 +278,7 @@ GET /auctions/offers/_search
   }
 }
 
-//significant_terms
+//significant_terms - przygotować zbiór marki tylko obiektywów
 GET /auctions/offers/_search
 {
   "query": { 
@@ -326,7 +319,7 @@ GET /auctions/offers/_search
 }
 
 
-//top hits
+//top hits - w kategorii najtańsze
 
 GET /auctions/offers/_search
 {
@@ -355,8 +348,6 @@ GET /auctions/offers/_search
     }
   }
 }
-
-
 
 
 
