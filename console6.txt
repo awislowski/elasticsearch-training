@@ -1,8 +1,7 @@
-
 GET /auctions/_search
 {
   "query": {
-    "match_phrase": {
+    "match": {
       "name": "cannon"
     }
   }, 
@@ -13,9 +12,6 @@ GET /auctions/_search
   }
   
 }
-
-
-
 
 GET /auctions/_search
 {
@@ -32,12 +28,10 @@ GET /auctions/_search
   
 }
 
-
-
 GET auctions/_suggest
 {
   "suggest" : {
-    "text" : "obiekty",
+    "text" : "obiekt",
     "term" : {
       "field" : "name" 
     }
@@ -47,12 +41,9 @@ GET auctions/_suggest
 GET auctions/_suggest
 {
   "suggest" : {
-    "text" : "obiekty",
+    "text" : "oiektyw",
     "term" : {
-      "field" : "name" ,
-      "suggest_mode": "always",
-      "size" : 2
-      
+      "field" : "name" 
     }
   }
 }
@@ -60,16 +51,13 @@ GET auctions/_suggest
 GET auctions/_suggest
 {
   "suggest" : {
-    "text" : "obiektyw cann",
+    "text" : "obiekty cann",
     "phrase" : {
-      "field" : "name" ,
-      "size" : 2
-      
+      "field" : "name" 
     }
   }
 }
 
-//completion - do not know if use it:
 PUT auctions/product/_mapping 
 { 
   "product" : { 
@@ -77,21 +65,26 @@ PUT auctions/product/_mapping
       "name" : { "type" : "string" }, 
       "suggest" : { 
          "type" : "completion", 
-         "analyzer" : "simple" 
+         "analyzer" : "simple",
+         "payloads" : true
       } 
     }
   }
 }
 
-PUT _bulk
-{"index" : { "_index" : "auctions", "_type" : "product", "_id" : "1"}}
-{  "name": "Obiektyw Cannon 2.8", "suggest" : { "input" : [ "obiektyw", "cannon", "nikon"] }}
+PUT auctions/product/1
+{  "name": "Obiektyw Cannon 2.8", 
+   "suggest" : { 
+     "input" : [ "obiektyw", "cannon"], 
+     "output" : "Obiektyw Cannon",
+     "payload" : { "productId" : 1 }
+}}
 
 
 GET auctions/_suggest
 {
   "suggest" : {
-    "text" : "ca",
+    "text" : "obiektyw",
     "completion": {
       "field" : "suggest"
     }
@@ -101,12 +94,26 @@ GET auctions/_suggest
 GET auctions/_suggest
 {
   "suggest" : {
-    "text" : "canl",
+    "text" : "obietyw",
     "completion": {
       "field" : "suggest",
       "fuzzy" : {
-        "edit_distance" : 2
+        "edit_distance" : 1
       }
     }
   }
 }
+
+GET auctions/_suggest
+{
+  "suggest" : {
+    "text" : "cannon",
+    "completion": {
+      "field" : "suggest",
+      "fuzzy" : {
+        "edit_distance" : 1
+      }
+    }
+  }
+}
+
