@@ -358,30 +358,7 @@ GET /auctions/offers/_search
 }
 
 Zadania:
-1. Ile produktów poniżej 100 zł, 100 - 200 i ponad 200 zł
-GET /auctions/_search
-{
-  "size" : 0,
-  "aggs": {
-    "length35-70": {
-      "range": {
-         "field": "price",
-         "ranges": [
-           {
-             "to": 100
-           },
-           {
-             "from": 100,
-             "to": 200
-           },
-           {
-             "from": 200
-           }
-         ]
-       }
-    }   
-  }
-}
+1. Ile produktów poniżej 100 zł, 100 - 200 i ponad 200 zł względem kategorii
 
 2. Średnie ceny produktów wg kategorii w EUR
 
