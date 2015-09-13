@@ -1,4 +1,3 @@
-DELETE /auctions
 
 PUT /auctions/offers/1
 {
@@ -47,7 +46,7 @@ POST /auctions/offers/1/_update
   "script":   "ctx._source.price-=1"
 }
 
-włączenie grooviego
+//script.groovy.sandbox.enabled: true
 
 GET /auctions/offers/1
 
