@@ -1,20 +1,20 @@
-
 DELETE auctions
 PUT _bulk
 {"index" : { "_index" : "auctions", "_type" : "offers", "_id" : "1"}}
-{  "name": "Obiektyw Cannon 2.8",  "price" : 124.50, "category" : "obiektywy", "endDate": "2015-09-08T16:45:04.000Z", "attributes" : {"lenght" : 2.8 }}
+{  "name": "Obiektyw Cannon 2.8",  "price" : 124.50, "category" : "obiektywy", "endDate": "2015-09-16T16:45:04.000Z", "attributes" : {"lenght" : 35 }}
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
-{  "name": "Obiektyw Cannon 1.8",  "price" : 120.99,  "category" : "obiektywy", "endDate": "2015-09-09T16:45:04.000Z", "attributes" : {"lenght" : 1.8 } }
+{  "name": "Obiektyw Cannon 1.8",  "price" : 120.99,  "category" : "obiektywy", "endDate": "2015-09-17T16:45:04.000Z", "attributes" : {"lenght" : 70 } }
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
-{  "name": "Obiektyw Nikon 1.8",  "price" : 300.99,  "category" : "obiektywy", "endDate": "2015-09-09T16:45:04.000Z", "attributes" : {"lenght" : 1.8 } }
+{  "name": "Obiektyw Nikon 1.8",  "price" : 300.99,  "category" : "obiektywy", "endDate": "2015-09-18T16:45:04.000Z", "attributes" : {"lenght" : 150 } }
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
-{  "name": "Obiektyw Nikon 2.8",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-09-09T16:45:04.000Z", "attributes" : {"lenght" : 2.8 } }
+{  "name": "Obiektyw Nikon 2.8",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-09-19T16:45:04.000Z", "attributes" : {"lenght" : 90 } }
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
-{  "name": "Aparat Nikon D3200",  "price" : 500.99,  "category" : "aparaty cyfrowe", "endDate": "2015-09-09T16:45:04.000Z", "attributes" : {"lenght" : 1.8 } }
+{  "name": "Aparat Nikon D3200",  "price" : 500.99,  "category" : "aparaty cyfrowe", "endDate": "2015-09-20T16:45:04.000Z", "attributes" : {"lenght" : 1.8 } }
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
-{  "name": "Aparat Nikon D7010",  "price" : 600.99,  "category" : "aparaty cyfrowe", "endDate": "2015-09-09T16:45:04.000Z", "attributes" : {"lenght" : 2.8 } }
-
-
+{  "name": "Aparat Nikon D7010",  "price" : 600.99,  "category" : "aparaty cyfrowe", "endDate": "2015-09-21T16:45:04.000Z", "attributes" : {"lenght" : 2.8 } }
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Obiektyw Nikon 2.8",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-09-22T16:45:04.000Z"}
+  
 
 GET /auctions/_search
 
@@ -32,45 +32,22 @@ GET /auctions/_search
 }
 
 //pola nieanalizowane
-//dodaje mapping notanlyzed category
 
-//???
-GET /auctions/_search
+PUT auctions 
 {
-  "post_filter": {
-      "query": {
-"match": {
-          "name": "2.8"
+  "mappings": {
+    "offers": {
+      "properties": {
+        "category" : {
+          "type": "string",
+          "index": "not_analyzed"
         }
       }
-  }, 
-  "aggs": {
-    "category": {
-      "terms": {
-        "field": "category",
-        "size": 10
-      }
     }
   }
 }
 
-
-
-
-GET /auctions/_search
-{
-  "size": 0, 
-  "aggs": {
-    "category": {
-      "terms": {
-        "field": "category",
-        "size": 10
-      }
-    }
-  }
-}
-
-
+//cena w kategorii
 GET /auctions/_search
 {
   "size": 0, 
@@ -91,6 +68,7 @@ GET /auctions/_search
   }
 }
 
+// min, max, avg
 GET /auctions/_search
 {
   "size": 0, 
@@ -122,6 +100,9 @@ GET /auctions/_search
 }
 
 
+//show + stats
+
+//długość ogniskowej w obiektywach
 GET /auctions/_search
 {
   "size": 0, 
@@ -134,8 +115,7 @@ GET /auctions/_search
       "aggs": {
         "length": {
           "terms": {
-            "field": "attributes.lenght",
-            "size": 10
+            "field": "attributes.lenght"
           }
         }
       }
@@ -143,46 +123,97 @@ GET /auctions/_search
 }
 }
 
-//global - lepszy przykład (dla innych kolorów)
-
+// aby była tylko kategoria obiektywy
 GET /auctions/_search
 {
+  "size": 0, 
   "query": {
-     "match": {
-       "attributes.lenght": 1.8
-     }
-  },  
-  "aggs": {
-    "count": {
-      "value_count": {
-        "field": "attributes.lenght"
+    "term": {
+      "category": {
+        "value": "obiektywy"
       }
-    },
-    "all" :{
-      "global": {
-      } 
     }
+  }, 
+  "aggs": {
+    "category": {
+      "terms": {
+        "field": "category",
+        "size": 10
+      }, 
+      "aggs": {
+        "length": {
+          "terms": {
+            "field": "attributes.lenght"
+          }
+        }
+      }
   }
 }
+}
 
-//bucket for filter - bardzije złożone zappytanie!
-
+//Obiektywy o ogniskowej 70 - bucket for filter 
 GET /auctions/_search
 {
   "size" : 0,
   "aggs": {
-    "price_2.8": {
+    "length70": {
        "filter": {
-         "term": {
-           "attributes.lenght": 2.8
+         "bool": {
+           "must": [
+             { 
+               "term": {
+                "category": "obiektywy"
+                }
+             },
+             { 
+               "term": {
+                "attributes.lenght": 70
+                }
+             }
+           ]
          }
        }
     }   
   }
 }
 
-//missing - obiektywy bez wypełnionego światł
-GET /auctions/offers/_search
+//Obiektywy o ogniskowej 35-50 i 50-70 i powyżej 70
+GET /auctions/_search
+{
+  "size" : 0,
+  "query": {
+    "term": {
+      "category": {
+        "value": "obiektywy"
+      }
+    }
+  },
+  "aggs": {
+    "length35-70": {
+      "range": {
+         "field": "attributes.lenght",
+         "ranges": [
+           {
+             "from": 35,
+             "to": 50
+           },
+           {
+             "from": 50,
+             "to": 70
+           },
+           {
+             "from": 70
+           }
+         ]
+       }
+    }   
+  }
+}
+
+
+
+//missing - obiektywy bez wypełnionego atrybutu ogniskowej
+GET /auctions/_search
 {
   "size" : 0,
   "aggs": {
@@ -194,43 +225,22 @@ GET /auctions/offers/_search
   }
 }
 
-//scripted value price in EUR
-GET /auctions/offers/_search
+//Grupujemy po cenie i dodajemy marżę 10 zł - scripted 
+GET /auctions/_search
 {
   "size" : 0,
   "aggs": {
-    "length": {
+    "pri": {
       "terms": {
-        "field": "attributes.lenght",
-        "script" : "_value + 2"
+        "field": "price",
+        "script" : "_value + 10"
       }
     }
   }
 }
 
 
-
-
-
-//ranges zakres cen
-GET /auctions/offers/_search
-{
-  "size" : 0,
-  "aggs": {
-    "length": {
-      "range": {
-        "field": "attributes.lenght",
-        "ranges": [
-          {"to" : 0}, 
-          {  "from": 0, "to": 2 },
-          {"from":2 , "to": 5}
-        ]
-      }
-    }
-  }
-}
-
-//date range
+//Aukcje kończące się w przeciągu 2 dni - date range
 GET /auctions/offers/_search
 {
   "size" : 0,
@@ -241,7 +251,7 @@ GET /auctions/offers/_search
         "ranges": [
           {
             "from": "now",
-            "to": "now+10d"
+            "to": "now+2d"
           }
         ]
       }
@@ -249,8 +259,7 @@ GET /auctions/offers/_search
   }
 }
 
-//histogram - wykres słubkowy - co to historam definicjha
-
+//Grupowanie cen - histogram pod wykres słubkowy
 GET /auctions/offers/_search
 {
   "size" : 0,
@@ -258,13 +267,13 @@ GET /auctions/offers/_search
     "length_histogram": {
       "histogram": {
         "field": "price",
-        "interval": 1
+        "interval": 100
       }
     }
   }
 }
 
-//date_histogram
+//Grupowanie po datach - date_histogram
 GET /auctions/offers/_search
 {
   "size" : 0,
@@ -278,27 +287,8 @@ GET /auctions/offers/_search
   }
 }
 
-//significant_terms - przygotować zbiór marki tylko obiektywów
-GET /auctions/offers/_search
-{
-  "query": { 
-    "terms": {
-      "category": [
-        "obiektywy"
-      ]
-    }
-  },
-  "size": 0, 
-  "aggs": {
-    "significantTerms": {
-      "significant_terms": {
-        "field": "name"
-      }
-    }
-  }
-}
 
-//percentiles
+//Ceny w percentylach 
 GET /auctions/offers/_search
 {
   "query": { 
@@ -318,9 +308,7 @@ GET /auctions/offers/_search
   }
 }
 
-
-//top hits - w kategorii najtańsze
-
+//W kategorii najtańsze - top hits
 GET /auctions/offers/_search
 {
   "query": { 
@@ -340,7 +328,7 @@ GET /auctions/offers/_search
         },
         "sort": [
           {
-            "attributes.lenght": {
+            "price": {
               "order": "asc"
             }
           }]
@@ -349,7 +337,52 @@ GET /auctions/offers/_search
   }
 }
 
+//Termy znaczące w podzbiorze względem całości - significant_terms
+GET /auctions/offers/_search
+{
+  "query": { 
+    "terms": {
+      "category": [
+        "obiektywy"
+      ]
+    }
+  },
+  "size": 0, 
+  "aggs": {
+    "significantTerms": {
+      "significant_terms": {
+        "field": "name"
+      }
+    }
+  }
+}
 
+Zadania:
+1. Ile produktów poniżej 100 zł, 100 - 200 i ponad 200 zł
+GET /auctions/_search
+{
+  "size" : 0,
+  "aggs": {
+    "length35-70": {
+      "range": {
+         "field": "price",
+         "ranges": [
+           {
+             "to": 100
+           },
+           {
+             "from": 100,
+             "to": 200
+           },
+           {
+             "from": 200
+           }
+         ]
+       }
+    }   
+  }
+}
 
+2. Średnie ceny produktów wg kategorii w EUR
 
 
