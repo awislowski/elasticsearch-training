@@ -102,7 +102,7 @@ GET /auctions/_search
 
 //show + stats
 
-//długość ogniskowej w obiektywach
+//długość ogniskowej w obiektywach ("length" - nazwa)
 GET /auctions/_search
 {
   "size": 0, 
@@ -151,6 +151,7 @@ GET /auctions/_search
 }
 }
 
+//agregacja -> filter
 //Obiektywy o ogniskowej 70 - bucket for filter 
 GET /auctions/_search
 {
@@ -211,7 +212,7 @@ GET /auctions/_search
 }
 
 
-
+//dodać kategorie
 //missing - obiektywy bez wypełnionego atrybutu ogniskowej
 GET /auctions/_search
 {
@@ -358,8 +359,7 @@ GET /auctions/offers/_search
 }
 
 Zadania:
-1. Ile produktów poniżej 100 zł, 100 - 200 i ponad 200 zł względem kategorii
+1. Ile produktów poniżej 100 zł, 100 - 200 i ponad 200 zł występuje per kategoria
 
-2. Średnie ceny produktów wg kategorii w EUR
-
+2. Średnie ceny produktów per kategoria w EUR
 

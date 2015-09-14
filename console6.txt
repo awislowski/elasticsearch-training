@@ -91,29 +91,3 @@ GET auctions/_suggest
   }
 }
 
-GET auctions/_suggest
-{
-  "suggest" : {
-    "text" : "obietyw",
-    "completion": {
-      "field" : "suggest",
-      "fuzzy" : {
-        "edit_distance" : 1
-      }
-    }
-  }
-}
-
-GET auctions/_suggest
-{
-  "suggest" : {
-    "text" : "cannon",
-    "completion": {
-      "field" : "suggest",
-      "fuzzy" : {
-        "edit_distance" : 1
-      }
-    }
-  }
-}
-
