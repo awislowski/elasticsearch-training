@@ -1,4 +1,0 @@
-2.5. Install elasticsearch
-2.7. Install marvel
-3. Uruchomienie recovery
-
