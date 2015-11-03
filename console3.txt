@@ -74,3 +74,9 @@ PUT _bulk
 
 
 GET /auctions/_search
+
+
+//Zadanie 1
+//Dodajcie 3 aukcje w katagorii akcesoria: torba za 100 zł, pasek do aparatu za 30 zł i statyw za 200 zł 
+
+
