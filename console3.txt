@@ -1,4 +1,3 @@
-
 PUT /auctions/offers/1
 {
   "name": "Obiektyw Cannon 2.8"
@@ -22,7 +21,7 @@ POST /auctions/offers
   "price" : 120.99
 }
 
-GET  /auctions/offers/AU-r8FE2ZiRQpBgL4dCh
+GET  /auctions/offers/AVDNlSl5hlZwkR99AqZL
 
 POST /auctions/offers/1
 {
@@ -46,7 +45,7 @@ POST /auctions/offers/1/_update
   "script":   "ctx._source.price-=1"
 }
 
-//script.groovy.sandbox.enabled: true
+//script.inline: on
 
 GET /auctions/offers/1
 
