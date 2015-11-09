@@ -1,19 +1,21 @@
 DELETE auctions
 PUT _bulk
 {"index" : { "_index" : "auctions", "_type" : "offers", "_id" : "1"}}
-{  "name": "Obiektyw Cannon 2.8",  "price" : 124.50, "category" : "obiektywy", "endDate": "2015-09-16T16:45:04.000Z", "attributes" : {"lenght" : 35 }}
+{  "name": "Obiektyw Cannon 2.8",  "price" : 124.50, "category" : "obiektywy", "endDate": "2015-11-19T16:45:04.000Z", "attributes" : {"lenght" : 35 }}
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
-{  "name": "Obiektyw Cannon 1.8",  "price" : 120.99,  "category" : "obiektywy", "endDate": "2015-09-17T16:45:04.000Z", "attributes" : {"lenght" : 70 } }
+{  "name": "Obiektyw Cannon 1.8",  "price" : 120.99,  "category" : "obiektywy", "endDate": "2015-11-18T16:45:04.000Z", "attributes" : {"lenght" : 70 } }
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
-{  "name": "Obiektyw Nikon 1.8",  "price" : 300.99,  "category" : "obiektywy", "endDate": "2015-09-18T16:45:04.000Z", "attributes" : {"lenght" : 150 } }
+{  "name": "Obiektyw Nikon 1.8",  "price" : 300.99,  "category" : "obiektywy", "endDate": "2015-11-18T16:45:04.000Z", "attributes" : {"lenght" : 150 } }
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
-{  "name": "Obiektyw Nikon 2.8",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-09-19T16:45:04.000Z", "attributes" : {"lenght" : 90 } }
+{  "name": "Obiektyw Nikon 2.8",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-11-19T16:45:04.000Z", "attributes" : {"lenght" : 90 } }
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
-{  "name": "Aparat Nikon D3200",  "price" : 500.99,  "category" : "aparaty cyfrowe", "endDate": "2015-09-20T16:45:04.000Z", "attributes" : {"lenght" : 1.8 } }
+{  "name": "Obiektyw Nikon 4",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-11-19T16:45:04.000Z" }
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
-{  "name": "Aparat Nikon D7010",  "price" : 600.99,  "category" : "aparaty cyfrowe", "endDate": "2015-09-21T16:45:04.000Z", "attributes" : {"lenght" : 2.8 } }
+{  "name": "Aparat Nikon D3200",  "price" : 500.99,  "category" : "aparaty cyfrowe", "endDate": "2015-11-20T16:45:04.000Z"}
 {"index" : { "_index" : "auctions", "_type" : "offers" }}
-{  "name": "Obiektyw Nikon 2.8",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-09-22T16:45:04.000Z"}
+{  "name": "Aparat Nikon D7010",  "price" : 600.99,  "category" : "aparaty cyfrowe", "endDate": "2015-11-21T16:45:04.000Z"}
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Obiektyw Nikon 2.8",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-11-22T16:45:04.000Z"}
   
 
 GET /auctions/_search
@@ -46,6 +48,8 @@ PUT auctions
     }
   }
 }
+
+GET auctions/_mapping
 
 //cena w kategorii
 GET /auctions/_search
@@ -101,6 +105,27 @@ GET /auctions/_search
 
 
 //show + stats
+
+GET /auctions/_search
+{
+  "size": 0, 
+  "aggs": {
+    "category": {
+      "terms": {
+        "field": "category",
+        "size": 10
+      },
+      "aggs": {
+        "stats": {
+          "stats": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+
 
 //długość ogniskowej w obiektywach ("length" - nazwa)
 GET /auctions/_search
@@ -358,8 +383,11 @@ GET /auctions/offers/_search
   }
 }
 
+
+
 Zadania:
-1. Ile produktów poniżej 100 zł, 100 - 200 i ponad 200 zł występuje per kategoria
+1. Jakie są znaczące termyw nazwie aukcji w kategorii aparaty cyfrowe
 
-2. Średnie ceny produktów per kategoria w EUR
+2. Ile produktów poniżej 100 zł, 100 - 200 i ponad 200 zł występuje per kategoria
 
+3. Średnie ceny produktów per kategoria w EUR
