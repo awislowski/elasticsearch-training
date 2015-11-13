@@ -1,3 +1,4 @@
+
 GET /auctions/_search
 {
   "query": {
@@ -33,7 +34,8 @@ GET auctions/_suggest
   "suggest" : {
     "text" : "obiekt",
     "term" : {
-      "field" : "name" 
+      "field" : "name", 
+      "suggest_mode": "missing"
     }
   }
 }
@@ -41,7 +43,18 @@ GET auctions/_suggest
 GET auctions/_suggest
 {
   "suggest" : {
-    "text" : "oiektyw",
+    "text" : "oiekty",
+    "term" : {
+      "field" : "name" ,
+      "max_edits" : 2 
+    }
+  }
+}
+
+GET auctions/_suggest
+{
+  "suggest" : {
+    "text" : "Obiekty Canno",
     "term" : {
       "field" : "name" 
     }
@@ -51,12 +64,15 @@ GET auctions/_suggest
 GET auctions/_suggest
 {
   "suggest" : {
-    "text" : "obiekty cann",
+    "text" : "Obiekty Canno",
     "phrase" : {
-      "field" : "name" 
+      "field" : "name", 
+      "max_errors" : 2
     }
   }
 }
+
+//special mapping for auto-completion
 
 PUT auctions/product/_mapping 
 { 
@@ -72,22 +88,143 @@ PUT auctions/product/_mapping
   }
 }
 
-PUT auctions/product/1
+POST auctions/product
 {  "name": "Obiektyw Cannon 2.8", 
    "suggest" : { 
      "input" : [ "obiektyw", "cannon"], 
      "output" : "Obiektyw Cannon",
-     "payload" : { "productId" : 1 }
+     "payload" : { "productId" : 1 },
+     "weight" : 10
 }}
 
 
 GET auctions/_suggest
 {
   "suggest" : {
-    "text" : "obiektyw",
+    "text" : "obiekty",
     "completion": {
       "field" : "suggest"
     }
   }
+}
+
+GET auctions/_suggest
+{
+  "suggest" : {
+    "text" : "oeibkty",
+    "completion": {
+      "field" : "suggest",
+      "fuzzy" : {
+                "fuzziness" : 1,
+                 "min_length" : 3
+            }
+    }
+  }
+}
+
+//category context
+
+PUT auctions/product/_mapping 
+{ 
+  "product" : { 
+    "properties" : { 
+      "suggest_color" : { 
+         "type" : "completion", 
+         "context": {
+           "color" : {
+             "type" : "category",
+             "path" : "name",
+             "default" : ["red", "green", "blue"]
+           }
+         }
+      } 
+    }
+  }
+}
+
+GET auctions/product/_mapping
+
+PUT auctions/product/1
+{
+    "name": "knapsack",
+    "suggest_color": {
+        "input": ["knacksack", "backpack", "daypack"],
+        "context": {
+            "color": ["red", "yellow"]
+        }
+    }
+}
+
+POST auctions/_suggest?pretty'
+{
+    "suggest" : {
+        "text" : "kna",
+        "completion" : {
+            "field" : "suggest_color",
+            "size": 10,
+            "context": {
+                "color": "red"
+            }
+        }
+    }
+}
+
+//geo context
+
+PUT auctions/product/_mapping 
+{ 
+  "product" : { 
+    "properties" : { 
+      "location" : {
+        "type" : "geo_point"
+      },
+      "suggest_geo" : { 
+         "type" : "completion", 
+         "context": {
+           "location" : {
+            "type" : "geo",
+            "precision": "1km",
+            "neighbors": true,
+            "path": "location",
+            "default": {
+                "lat": 0.0,
+                "lon": 0.0
+             }
+           }
+         }
+      } 
+    }
+  }
+}
+
+POST auctions/product
+{
+    "name": "Apatat Cannon 750D",
+    "suggest_geo": {
+        "input": ["cannon", "750D"],
+        "context": {
+            "location": {
+                    "lat": 52.217703,
+                    "lon": 21.016086
+            }
+        }
+    }
+}
+
+GET auctions/_suggest
+{
+    "suggest" : {
+        "text" : "ca",
+        "completion" : {
+            "field" : "suggest_geo",
+            "size": 10,
+            "context": {
+                "location": {
+                    "lat": 52.217703,
+                    "lon": 21.016086
+                }
+            }
+        }
+    }
 }
 
