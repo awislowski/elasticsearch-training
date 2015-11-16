@@ -1,0 +1,218 @@
+DELETE auctions
+
+PUT _bulk
+{"index" : { "_index" : "auctions", "_type" : "offers", "_id" : "1"}}
+{  "name": "Obiektyw Cannon 2.8",  "price" : 124.50, "category" : "obiektywy", "endDate": "2015-11-19T16:45:04.000Z", "attributes" : {"lenght" : 35 }}
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Obiektyw Cannon 1.8",  "price" : 120.99,  "category" : "obiektywy", "endDate": "2015-11-18T16:45:04.000Z", "attributes" : {"lenght" : 70 } }
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Obiektyw Nikon 1.8",  "price" : 300.99,  "category" : "obiektywy", "endDate": "2015-11-18T16:45:04.000Z", "attributes" : {"lenght" : 150 } }
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Obiektyw Nikon 2.8",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-11-19T16:45:04.000Z", "attributes" : {"lenght" : 90 } }
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Obiektyw Nikon 4",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-11-19T16:45:04.000Z" }
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Aparat Nikon D3200",  "price" : 500.99,  "category" : "aparaty cyfrowe", "endDate": "2015-11-20T16:45:04.000Z"}
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Aparat Nikon D7010",  "price" : 600.99,  "category" : "aparaty cyfrowe", "endDate": "2015-11-21T16:45:04.000Z"}
+{"index" : { "_index" : "auctions", "_type" : "offers" }}
+{  "name": "Obiektyw Nikon 2.8",  "price" : 200.99,  "category" : "obiektywy", "endDate": "2015-11-22T16:45:04.000Z"}
+  
+//term  
+  
+GET auctions/_search
+{
+  "fields": [ "category"], 
+  "query": {
+    "term": {
+      "category": {
+        "value": "Obiektywy"
+      }
+    }
+  }
+}
+
+PUT auctions
+{
+  "mappings": {
+    "offers": {
+      "properties": {
+        "category" : { 
+          "type": "string",
+          "index": "analyzed",
+          "fields": {
+            "raw" : { 
+              "type": "string",
+              "index": "not_analyzed"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+GET auctions/_search
+{
+  "fields": [ "category"], 
+  "query": {
+    "term": {
+      "category.raw": {
+        "value": "aparaty cyfrowe"
+      }
+    }
+  }
+}
+
+
+
+//term filter
+GET auctions/_search
+{
+  "fields": [ "category"], 
+    "query": {
+      "constant_score": {
+        "filter": {
+          "term": {
+            "category.raw": "aparaty cyfrowe",
+            "_cache" : false
+          }
+        }
+      } 
+    }
+}
+
+
+//terms
+GET auctions/_search
+{
+  "query": {
+    "terms": {
+      "category": [
+        "aparaty",
+        "cyfrowe"
+      ]
+    }
+  }
+}
+
+
+//match all
+
+GET  auctions/_search
+{
+}
+
+GET  auctions/_search
+{
+  "query": {
+    "match_all": {
+    }
+  }
+}
+
+//match
+GET auctions/_search
+{
+  "query": {
+    "match": {
+          "category": "Obiektywy"
+        }
+  }
+}
+
+GET auctions/offers/_search
+{
+  "query": {
+    "match": {
+      "category": {
+        "query": "aparaty analogowe",
+        "operator": "or",
+        "minimum_should_match" : 1
+      }
+    }
+  },
+  "sort": [
+    {
+      "endDate": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+
+//multi_match
+GET auctions/offers/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "aparat",
+      "fields": ["category", "name"]
+      }
+  }
+}
+
+
+//bool 
+GET auctions/_search
+{
+  "query": {
+    "bool": {
+      "filter": {
+        "term" : {
+          "category.raw" : "aparaty cyfrowe"
+        }
+      },
+      "must": [
+        {
+          "range": {
+            "price": {
+              "lte": 700
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "range": {
+            "endDate": {
+              "gte": "2015-11-20T17:45:04.000Z"
+            }
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "match": {
+            "name": "Canon"
+          }
+        }
+      ], 
+      "minimum_number_should_match": 0
+    }
+  }
+}
+
+
+//post filter
+
+GET  auctions/_search
+{
+  "aggs": {
+    "category": {
+      "terms": {
+        "field": "category.raw",
+        "size": 10
+      }
+    }
+  }, 
+  "post_filter": {
+    "term": {
+      "category.raw": "obiektywy"
+    }
+  }
+}
+
+
+Zadanie:
+1. Wyszukaj wszystkie obiektywy poniżej 300 zł i aparaty poniżej 600 zł
