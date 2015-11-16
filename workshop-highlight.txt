@@ -228,3 +228,6 @@ GET auctions/_suggest
     }
 }
 
+Zadania:
+
+1. Napisz request generujący podpowiedź dla indeksu auctions dla pola category dla słów: obiekt, obiekty, aparas, ataraty
