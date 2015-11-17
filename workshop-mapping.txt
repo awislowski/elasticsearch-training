@@ -1,0 +1,21 @@
+DELETE library
+
+POST library
+{
+  "mappings" : {
+    "books" : {
+      "properties" : {
+        "title" : { "type" : "string" }
+      }
+    }
+  }
+}
+
+GET library/_analyze
+{
+  "field" : "title",
+  "text" : "The Quick Fox Jumped"
+}
+
+
+// Zdefiniuj index library2 z typem book tak aby analizator pola title usuwał "stopwordy".
