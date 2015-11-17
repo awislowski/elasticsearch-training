@@ -1,0 +1,13 @@
+GET _analyze
+{
+  "tokenizer" : "standard",
+  "filters" : ["lowercase",],
+  "text" : "The Quick Fox Jumped"
+}
+
+GET _analyze
+{
+  "tokenizer" : "standard",
+  "filters" : ["lowercase", "stop"],
+  "text" : "The Quick Fox Jumped"
+}
