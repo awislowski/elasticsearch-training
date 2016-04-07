@@ -4,6 +4,7 @@ POST library
 {
   "settings" : {
     "number_of_shards" : 1,
+    "number_of_replicas": 0,
     "analysis": {
       "analyzer": {
         "analyzer_shingle": {
@@ -35,8 +36,7 @@ POST library
   }
 }
 
-GET library/_mapping        
-        
+
 PUT _bulk
 {"index" : { "_index" : "library", "_type" : "books", "_id" : "1"}}
 {  "title": "The Call of the Wild",  "author" : "Jack London", "description" : "As Buck, a mixed breed dog, is taken away from his home, instead of facing a feast for breakfast and the comforts of home, he faces the hardships of being a sled dog. Soon he lands in the wrong hands, being forced to keep going when it is too rough for him and the other dogs in his pack. He also fights the urges to run free with his ancestors, the wolves who live around where he is pulling the sled. description"}
@@ -49,30 +49,15 @@ PUT _bulk
 {"index" : { "_index" : "library", "_type" : "books" }}
 {  "title": "The Adventures of Oliver Twist",  "author" : "Charles Dickens",  "description" : "Thanks to its colorful cast of characters and gritty portrayal of street life in Victorian London, Dickens’ Oliver Twist has captured readers’ hearts for more than 150 years. Today’s children will love it too. Oliver, a poor orphan, escapes the miserable workhouse where he was born only to fall into the clutches of a band of pickpockets led by the odious Fagin. Yet no amount of cruelty can destroy his purity…and through his goodness, he finds salvation."}
 
-
-
-GET library/_search
-{
-    "query": {
-        "match_phrase": {
-            "title": {
-                "query": "adventures of finn",
-                "slop": 3
-            }
-        }
-    },
-    "fields": ["title", "author"]
-}
-
+# standard match query
 GET library/_search
 {
   "query": {
     "match": {
       "title": {
-        "query": "the adventures"
+        "query": "the adventures of"
       }
     }
   },
   "fields": ["title"]
 }
-
