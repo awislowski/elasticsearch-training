@@ -61,3 +61,11 @@ GET library/_search
   },
   "fields": ["title"]
 }
+
+
+# tokens
+GET library/_analyze
+{
+  "field": "title",
+  "text": "the adventures of"
+}
