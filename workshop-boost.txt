@@ -2,25 +2,24 @@ GET library/_search
 {
   "query": {
     "multi_match": {
-      "query": "adventures",
+      "query": "wild adventures",
       "fields": ["title", "description"]
       }
     }
   ,
-  "fields": ["title", "description"]
+  "fields": ["title", "description"],
+  "explain": false
 }
-
-
-// "explain": true,
 
 GET library/_search
 {
   "query": {
     "multi_match": {
-      "query": "adventures",
-      "fields": ["title", "description^3"]
+      "query":  "wild adventures",
+      "fields": ["title^2", "description"]
       }
     }
   ,
-  "fields": ["title", "description"]
+  "fields": ["title", "description"],
+  "explain": false
 }

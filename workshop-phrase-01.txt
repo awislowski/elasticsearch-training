@@ -26,7 +26,7 @@ PUT _bulk
 {"index" : { "_index" : "library", "_type" : "books" }}
 {  "title": "White Fang",  "author" : "Jack London",  "description" : "The adventures of a wolf/dog cross, who is raised by Indians, and becomes a deadly fighter."}
 {"index" : { "_index" : "library", "_type" : "books" }}
-{  "title": "Adventures of Tom Sawyer",  "author" : "Mark Twain",  "description" : "The adventures and pranks of a mischievous boy growing up in a Mississippi River town in the early nineteenth century."}
+{  "title": "Adventures of Tom Sawyer",  "author" : "Mark Twain",  "description" : "The adventures and pranks of a mischievous boy growing up in a Mississippi River town in the early nineteenth century. Wild nature.}
 {"index" : { "_index" : "library", "_type" : "books" }}
 {  "title": "Adventures of Huckleberry Finn",  "author" : "Mark Twain",  "description" : "Two young boys, Tom Sawyer and Huckleberry Finn, have each come into a considerable sum of money as a result of their earlier adventures (The Adventures of Tom Sawyer). Huck has been placed under the guardianship of the Widow Douglas, who, together with her sister, Miss Watson, are attempting to 'sivilize' him..."}
 {"index" : { "_index" : "library", "_type" : "books" }}
