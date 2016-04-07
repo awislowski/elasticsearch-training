@@ -1,3 +1,4 @@
+# standard query
 GET library/_search
 {
   "query": {
@@ -11,6 +12,7 @@ GET library/_search
   "explain": false
 }
 
+# query with title boost
 GET library/_search
 {
   "query": {
